@@ -1,0 +1,19 @@
+{
+  "name": "Cross Notes",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "browser_action": {},
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  }
+}
