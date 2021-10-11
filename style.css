@@ -1,21 +1,11 @@
-.paint-canvas {
-  border: 1px black solid;
-  display: block;
-  margin: 1rem;
-}
-
-.color-picker {
-  margin: 1rem 1rem 0 1rem;
-}
-.js-line-range {
-  margin: 10px;
-  max-width: 95%;
-}
-.js-range-value {
-  margin: 10px;
-}
 .btn {
   display: inline-block;
-
   margin: 10px;
+}
+
+.sheet {
+  margin-left: 10px;
+  margin-top: 10px;
+  touch-action: none;
+  border: 1px solid black;
 }

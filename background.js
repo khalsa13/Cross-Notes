@@ -64,7 +64,7 @@ chrome.browserAction.onClicked.addListener(function () {
       width: w,
       height: h,
       left: left,
-      top: 65,
+      top: 70,
     },
     function (window) {}
   );

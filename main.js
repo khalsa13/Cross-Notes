@@ -1,54 +1,160 @@
-const paintCanvas = document.querySelector(".js-paint");
-const context = paintCanvas.getContext("2d");
-context.lineCap = "round";
+"use strict";
+const canvas = document.querySelector(".sheet");
+const context = canvas.getContext("2d");
 
-const colorPicker = document.querySelector(".js-color-picker");
+context.strokeStyle = "#9c1fde";
+context.lineJoin = "round";
+context.lineWidth = 2;
 
-colorPicker.addEventListener("change", (event) => {
-  context.strokeStyle = event.target.value;
-});
+var clickX = [];
+var clickY = [];
+var clickDrag = [];
+var paint;
 
-const lineWidthRange = document.querySelector(".js-line-range");
-const lineWidthLabel = document.querySelector(".js-range-value");
+/**
+ * Add information where the user clicked at.
+ * @param {number} x
+ * @param {number} y
+ * @return {boolean} dragging
+ */
+function addClick(x, y, dragging) {
+  clickX.push(x);
+  clickY.push(y);
+  clickDrag.push(dragging);
+}
 
-lineWidthRange.addEventListener("input", (event) => {
-  const width = event.target.value;
-  lineWidthLabel.innerHTML = width;
-  context.lineWidth = width;
-});
+/**
+ * Redraw the complete canvas.
+ */
+function redraw() {
+  // Clears the canvas
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-let x = 0,
-  y = 0;
-let isMouseDown = false;
+  for (var i = 0; i < clickX.length; i += 1) {
+    if (!clickDrag[i] && i == 0) {
+      context.beginPath();
+      context.moveTo(clickX[i], clickY[i]);
+      context.stroke();
+    } else if (!clickDrag[i] && i > 0) {
+      context.closePath();
 
-const stopDrawing = () => {
-  isMouseDown = false;
-};
-const startDrawing = (event) => {
-  isMouseDown = true;
-  [x, y] = [event.offsetX, event.offsetY];
-};
-const drawLine = (event) => {
-  if (isMouseDown) {
-    const newX = event.offsetX;
-    const newY = event.offsetY;
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(newX, newY);
-    context.stroke();
-    //[x, y] = [newX, newY];
-    x = newX;
-    y = newY;
+      context.beginPath();
+      context.moveTo(clickX[i], clickY[i]);
+      context.stroke();
+    } else {
+      context.lineTo(clickX[i], clickY[i]);
+      context.stroke();
+    }
   }
-};
+}
+
+/**
+ * Draw the newly added point.
+ * @return {void}
+ */
+function drawNew() {
+  var i = clickX.length - 1;
+  if (!clickDrag[i]) {
+    if (clickX.length == 0) {
+      context.beginPath();
+      context.moveTo(clickX[i], clickY[i]);
+      context.stroke();
+    } else {
+      context.closePath();
+
+      context.beginPath();
+      context.moveTo(clickX[i], clickY[i]);
+      context.stroke();
+    }
+  } else {
+    context.lineTo(clickX[i], clickY[i]);
+    context.stroke();
+  }
+}
+
+function mouseDownEventHandler(e) {
+  paint = true;
+  var x = e.pageX - canvas.offsetLeft;
+  var y = e.pageY - canvas.offsetTop;
+  if (paint) {
+    addClick(x, y, false);
+    drawNew();
+  }
+}
+
+function touchstartEventHandler(e) {
+  paint = true;
+  if (paint) {
+    addClick(
+      e.touches[0].pageX - canvas.offsetLeft,
+      e.touches[0].pageY - canvas.offsetTop,
+      false
+    );
+    drawNew();
+  }
+}
+
+function mouseUpEventHandler(e) {
+  context.closePath();
+  paint = false;
+}
+
+function mouseMoveEventHandler(e) {
+  var x = e.pageX - canvas.offsetLeft;
+  var y = e.pageY - canvas.offsetTop;
+  if (paint) {
+    addClick(x, y, true);
+    drawNew();
+  }
+}
+
+function touchMoveEventHandler(e) {
+  if (paint) {
+    addClick(
+      e.touches[0].pageX - canvas.offsetLeft,
+      e.touches[0].pageY - canvas.offsetTop,
+      true
+    );
+    drawNew();
+  }
+}
+
+function setUpHandler(isMouseandNotTouch, detectEvent) {
+  removeRaceHandlers();
+  if (isMouseandNotTouch) {
+    canvas.addEventListener("mouseup", mouseUpEventHandler);
+    canvas.addEventListener("mousemove", mouseMoveEventHandler);
+    canvas.addEventListener("mousedown", mouseDownEventHandler);
+    mouseDownEventHandler(detectEvent);
+  } else {
+    canvas.addEventListener("touchstart", touchstartEventHandler);
+    canvas.addEventListener("touchmove", touchMoveEventHandler);
+    canvas.addEventListener("touchend", mouseUpEventHandler);
+    touchstartEventHandler(detectEvent);
+  }
+}
+
+function mouseWins(e) {
+  setUpHandler(true, e);
+}
+
+function touchWins(e) {
+  setUpHandler(false, e);
+}
+
+function removeRaceHandlers() {
+  canvas.removeEventListener("mousedown", mouseWins);
+  canvas.removeEventListener("touchstart", touchWins);
+}
+
+canvas.addEventListener("mousedown", mouseWins);
+canvas.addEventListener("touchstart", touchWins);
+
 const clearDrawing = () => {
-  context.clearRect(0, 0, paintCanvas.width, paintCanvas.height);
-  x = [];
-  y = [];
-  isMouseDown = false;
+  context.clearRect(0, 0, canvas.width, canvas.height);
 };
 const saveDrawing = () => {
-  var image = paintCanvas
+  var image = canvas
     .toDataURL("image/png")
     .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
@@ -64,7 +170,3 @@ document.addEventListener("DOMContentLoaded", function () {
     saveDrawing();
   });
 });
-paintCanvas.addEventListener("mousedown", startDrawing);
-paintCanvas.addEventListener("mousemove", drawLine);
-paintCanvas.addEventListener("mouseup", stopDrawing);
-paintCanvas.addEventListener("mouseout", stopDrawing);
