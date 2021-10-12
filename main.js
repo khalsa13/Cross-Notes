@@ -72,16 +72,6 @@ function drawNew() {
   }
 }
 
-function mouseDownEventHandler(e) {
-  paint = true;
-  var x = e.pageX - canvas.offsetLeft;
-  var y = e.pageY - canvas.offsetTop;
-  if (paint) {
-    addClick(x, y, false);
-    drawNew();
-  }
-}
-
 function touchstartEventHandler(e) {
   paint = true;
   if (paint) {
@@ -90,20 +80,6 @@ function touchstartEventHandler(e) {
       e.touches[0].pageY - canvas.offsetTop,
       false
     );
-    drawNew();
-  }
-}
-
-function mouseUpEventHandler(e) {
-  context.closePath();
-  paint = false;
-}
-
-function mouseMoveEventHandler(e) {
-  var x = e.pageX - canvas.offsetLeft;
-  var y = e.pageY - canvas.offsetTop;
-  if (paint) {
-    addClick(x, y, true);
     drawNew();
   }
 }
@@ -119,23 +95,12 @@ function touchMoveEventHandler(e) {
   }
 }
 
-function setUpHandler(isMouseandNotTouch, detectEvent) {
+function setUpHandler(detectEvent) {
   removeRaceHandlers();
-  if (isMouseandNotTouch) {
-    canvas.addEventListener("mouseup", mouseUpEventHandler);
-    canvas.addEventListener("mousemove", mouseMoveEventHandler);
-    canvas.addEventListener("mousedown", mouseDownEventHandler);
-    mouseDownEventHandler(detectEvent);
-  } else {
-    canvas.addEventListener("touchstart", touchstartEventHandler);
-    canvas.addEventListener("touchmove", touchMoveEventHandler);
-    canvas.addEventListener("touchend", mouseUpEventHandler);
-    touchstartEventHandler(detectEvent);
-  }
-}
 
-function mouseWins(e) {
-  setUpHandler(true, e);
+  canvas.addEventListener("touchstart", touchstartEventHandler);
+  canvas.addEventListener("touchmove", touchMoveEventHandler);
+  touchstartEventHandler(detectEvent);
 }
 
 function touchWins(e) {
@@ -143,11 +108,9 @@ function touchWins(e) {
 }
 
 function removeRaceHandlers() {
-  canvas.removeEventListener("mousedown", mouseWins);
   canvas.removeEventListener("touchstart", touchWins);
 }
 
-canvas.addEventListener("mousedown", mouseWins);
 canvas.addEventListener("touchstart", touchWins);
 
 const clearDrawing = () => {
