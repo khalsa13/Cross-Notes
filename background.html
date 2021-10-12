@@ -14,11 +14,27 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div id="baseRow">
+      <button type="button" class="row btn btn-primary clear" id="Clear">
+        Clear
+      </button>
+
+      <div class="row collection">
+        <input
+          type="text"
+          class="form-control"
+          id="collection"
+          placeholder="Your collection name"
+          onblur="getVal()"
+        />
+      </div>
+      <button type="button" class="row btn btn-primary save" id="Save">
+        Save
+      </button>
+    </div>
+
     <canvas class="sheet" id="sheet" width="400" height="500"></canvas>
 
     <script language="javascript" src="main.js"></script>
-
-    <button type="button" class="btn btn-primary" id="Clear">Clear</button>
-    <button type="button" class="btn btn-primary" id="Save">Save</button>
   </body>
 </html>

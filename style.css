@@ -1,6 +1,7 @@
 .btn {
   display: inline-block;
   margin: 10px;
+  max-width: 60px;
 }
 
 .sheet {
@@ -8,4 +9,19 @@
   margin-top: 10px;
   touch-action: none;
   border: 1px solid black;
+}
+
+#baseRow {
+  width: 100%;
+}
+.collection {
+  margin-top: 2.5%;
+}
+.row {
+  text-align: center;
+  float: left;
+  position: relative;
+  width: 50%;
+  margin-left: 3%;
+  margin-right: 3%;
 }

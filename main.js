@@ -133,3 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
     saveDrawing();
   });
 });
+
+function getVal() {
+  const val = document.querySelector("input").value;
+  console.log(val);
+}
