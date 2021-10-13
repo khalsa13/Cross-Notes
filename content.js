@@ -1,3 +1,20 @@
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  alert("Collection Saved");
+  console.log(
+    sender.tab
+      ? "from a content script:" + sender.tab.url
+      : "from the extension"
+  );
+
+  console.log("received message from popup: " + request.greeting);
+  var image = request.canvas
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  window.location.href = image;
+  sendResponse({ farewell: "I'm good, thank you popup!" });
+});
+
 var body = document.body,
   html = document.documentElement;
 

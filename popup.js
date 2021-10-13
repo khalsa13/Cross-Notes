@@ -138,3 +138,20 @@ function getVal() {
   const val = document.querySelector("input").value;
   console.log(val);
 }
+
+// save Collections listener and message sender
+function popup() {
+  chrome.tabs.query(
+    {
+      active: true,
+      currentWindow: true,
+    },
+    (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, tabs[0].document.canvas);
+    }
+  );
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("snap").addEventListener("click", popup);
+});
