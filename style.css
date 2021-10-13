@@ -3,6 +3,14 @@
   margin: 10px;
   max-width: 60px;
 }
+
+.clear {
+    background-color: red;
+}
+
+.save {
+    background-color: lightgreen;
+}
 .btn-snap {
   display: inline-block;
   margin: 10px;
