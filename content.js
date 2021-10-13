@@ -146,8 +146,12 @@ canvas.addEventListener("touchstart", touchWins);
 chrome.runtime.onMessage.addListener(gotMessage);
 function gotMessage(request, sender, sendResponse) {
   if (request.txt === "saveSnap") {
-    alert("Saved in Collections");
-    captureScreenshot();
+    if (request.collectionName === "") {
+      alert("! Please give name to your collection and then Save.");
+    } else {
+      alert("Saved in Collections.");
+      captureScreenshot();
+    }
   }
 }
 function captureScreenshot() {
