@@ -147,7 +147,11 @@ function popup() {
       currentWindow: true,
     },
     (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, tabs[0].document.canvas);
+      let message = {
+        txt: "saveSnap",
+        tabId: tabs[0].id,
+      };
+      chrome.tabs.sendMessage(tabs[0].id, message);
     }
   );
 }

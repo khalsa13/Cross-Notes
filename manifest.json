@@ -5,7 +5,7 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-
+  "web_accessible_resources": ["node_modules/html2canvas/dist/html2canvas.js"],
   "permissions": [
     "contextMenus",
     "activeTab",
@@ -13,13 +13,12 @@
     "http://*/*",
     "https://*/*",
     "storage",
-    "unlimitedStorage",
-    "http://paperjs.org/assets/js/paper.js"
+    "unlimitedStorage"
   ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["content.js", "node_modules/html2canvas/dist/html2canvas.js"]
     }
   ],
   "background": {
