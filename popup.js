@@ -1,5 +1,6 @@
 "use strict";
 const canvas = document.querySelector(".sheet");
+const input = document.getElementById("collection");
 const context = canvas.getContext("2d");
 
 context.strokeStyle = "#9c1fde";
@@ -142,8 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function getVal() {
-  const val = document.querySelector("input").value;
-  console.log(val);
+  return input.value;
 }
 
 // save Collections listener and message sender
@@ -154,7 +154,12 @@ function popup() {
       currentWindow: true,
     },
     (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, tabs[0].document.canvas);
+      let message = {
+        txt: "saveSnap",
+        tabId: tabs[0].id,
+        collectionName: getVal(),
+      };
+      chrome.tabs.sendMessage(tabs[0].id, message);
     }
   );
 }
