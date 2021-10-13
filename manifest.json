@@ -13,7 +13,8 @@
     "http://*/*",
     "https://*/*",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "notifications"
   ],
   "content_scripts": [
     {
