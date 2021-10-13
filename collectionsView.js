@@ -11,22 +11,25 @@ const firebaseConfig = {
 };
 
 window.onload = function (event) {
-  //   if (!firebase.apps.length) {
-  //     firebase.initializeApp(firebaseConfig);
-  //   } else {
-  //     firebase.app(); // if already initialized, use that one
-  //   }
-  //   db = firebase.firestore();
-  //   db.settings({ timestampsInSnapshots: true });
-  //   const snapshot = db.collection("NotesCollection").doc("abc.com").get();
-  //   var millisecondsToWait = 4000;
-  //   setTimeout(function () {
-  //     alert(snapshot.docs.map((doc) => doc.data()));
-  //   }, millisecondsToWait);
-  // addRow("tableBody", nameCollection, imageName);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
+
+  db = firebase.firestore();
+  db.settings({ timestampsInSnapshots: true });
+  db.collection("NotesCollection")
+    .get()
+    .then((querySnapshot) => {
+      const documents = querySnapshot.docs.map((doc) => doc.data());
+      documents.forEach((element) => {
+        addRow("tableBody", element["name"], element["images"][0]);
+      });
+    });
 };
 
-function addRow(tableID) {
+function addRow(tableID, nameCollection, imageName) {
   var table = document.getElementById(tableID);
   var rowCount = table.rows.length;
   var row = table.insertRow(rowCount);
@@ -41,7 +44,8 @@ function addRow(tableID) {
   var cell2 = row.insertCell(1);
   var element2 = document.createElement("td");
   var anchor = document.createElement("a");
-  anchor.href = "";
+  anchor.href = "C://Users/ramasingh/Downloads/" + imageName + ".png";
+  anchor.target = "_blank";
   element2.appendChild(anchor);
   var imgTag = document.createElement("img");
   imgTag.style.width = "75px";
