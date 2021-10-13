@@ -124,6 +124,9 @@ const saveDrawing = () => {
 
   window.location.href = image; // it will save locally
 };
+const showCollections = () => {
+  chrome.tabs.create({'url': chrome.runtime.getURL('collectionsView.html')});
+};
 document.addEventListener("DOMContentLoaded", function () {
   var clear = document.getElementById("Clear");
   clear.addEventListener("click", function () {
@@ -133,6 +136,12 @@ document.addEventListener("DOMContentLoaded", function () {
   save.addEventListener("click", function () {
     saveDrawing();
   });
+  
+  var expand = document.getElementById("Expand");
+  expand.addEventListener("click", function () {
+    showCollections();
+  });
+  
 });
 
 function getVal() {
