@@ -5,7 +5,11 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-  "web_accessible_resources": ["node_modules/html2canvas/dist/html2canvas.js"],
+  "web_accessible_resources": [
+    "node_modules/html2canvas/dist/html2canvas.js",
+    "Firebase/firebase-app.js",
+    "Firebase/firebase-firestore.js"
+  ],
   "permissions": [
     "contextMenus",
     "activeTab",
@@ -19,11 +23,17 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js", "node_modules/html2canvas/dist/html2canvas.js"]
+      "js": [
+        "content.js",
+        "node_modules/html2canvas/dist/html2canvas.js",
+        "Firebase/firebase-app.js",
+        "Firebase/firebase-firestore.js"
+      ]
     }
   ],
   "background": {
     "scripts": ["background.js"],
     "persistent": true
-  }
+  },
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
 }

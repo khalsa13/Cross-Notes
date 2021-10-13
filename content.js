@@ -1,10 +1,32 @@
+var db, nameImageFile;
+//firebase firestore collection
+const firebaseConfig = {
+  apiKey: "AIzaSyDKMn4r0jZTOtQzC21qHU3pn0Q_Z7SLH3Q",
+  authDomain: "cross-notes.firebaseapp.com",
+  projectId: "cross-notes",
+  storageBucket: "cross-notes.appspot.com",
+  messagingSenderId: "1094186463198",
+  appId: "1:1094186463198:web:a918c132f09751abf8f74f",
+  measurementId: "G-9L4D06W3RX",
+};
 window.onload = function (event) {
   //notifyMe();
   canvas.height = height;
   canvas.width = width;
   console.log(width);
   console.log(window.innerWidth);
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
+
+  db = firebase.firestore();
+  //storage Image references
+  nameImageFile = "Image_" + Date.now();
 };
+
 var body = document.body,
   html = document.documentElement;
 
@@ -151,25 +173,36 @@ function gotMessage(request, sender, sendResponse) {
       alert("! Please give name to your collection and then Save.");
     } else {
       alert("Saved in Collections.");
-      captureScreenshot();
+
+      var container = document.body; // full page
+      var imageFile;
+
+      html2canvas(container).then(function (canvas) {
+        imageFile = canvas
+          .toDataURL("image/jpeg")
+          .replace("image/jpeg", "image/octet-stream");
+        link.href = imageFile;
+        link.target = "_blank";
+        link.click();
+      });
+      var millisecondsToWait = 2000;
+      setTimeout(function () {
+        console.log(link.href);
+
+        var endLength = request.tabUrl.length < 29 ? request.tabUrl.length : 20;
+        console.log(request.tabUrl.substring(9, endLength));
+        db.collection("NotesCollection")
+          .doc(request.tabUrl.substring(9, endLength))
+          .set({ name: request.collectionName, images: [nameImageFile] })
+          .then((result) => {
+            console.log("success", result);
+          });
+      }, millisecondsToWait);
     }
   }
 }
-function captureScreenshot() {
-  var container = document.body; // full page
-  html2canvas(container).then(function (canvas) {
-    var link = document.createElement("a");
-    document.body.appendChild(link);
-    link.download = "html_image.png";
-    link.href = canvas.toDataURL("image/png");
-    link.target = "_blank";
-    link.click();
-  });
-}
 
 // Showing notification
-
-//notification
 function notifyMe() {
   // Let's check if the browser supports notifications
   if (!("Notification" in window)) {
