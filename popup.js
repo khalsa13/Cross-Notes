@@ -123,6 +123,9 @@ const saveDrawing = () => {
 
   window.location.href = image; // it will save locally
 };
+const showCollections = () => {
+    window.open("", "collections");
+};
 document.addEventListener("DOMContentLoaded", function () {
   var clear = document.getElementById("Clear");
   clear.addEventListener("click", function () {
@@ -131,6 +134,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var save = document.getElementById("Save");
   save.addEventListener("click", function () {
     saveDrawing();
+  });
+  var expand = document.getElementById("Expand");
+  expand.addEventListener("click", function () {
+    showCollections();
   });
 });
 
