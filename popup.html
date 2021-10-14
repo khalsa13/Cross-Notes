@@ -8,50 +8,64 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
     <script src="assets/js/lib/html2canvas.js"></script>
     <title>Cross Notes</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="baseRow">
+      <input
+        type="text"
+        class="row collection form-control"
+        id="collection"
+        placeholder="Collection Name"
+        onblur="getVal()"
+      />
       <button
         type="button"
-        class="row btn btn-group btn-primary clear"
-        id="Clear"
+        id="Save"
+        class="row btn btn-sm btn-group btn-success save"
+        aria-label="Left Align"
+        style="margin-left: -1%"
       >
-        Clear
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
       </button>
 
-      <div class="row collection">
-        <input
-          type="text"
-          class="collection"
-          id="collection"
-          placeholder="Your collection name"
-          onblur="getVal()"
-        />
-      </div>
       <button
         type="button"
-        class="row btn btn-group btn-primary save"
-        id="Save"
+        class="row btn btn-sm btn-group btn-danger clear"
+        id="Clear"
+        style="margin-left: -1%"
+        aria-label="Left Align"
       >
-        Save
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
       </button>
+
       <button
         type="button"
-        class="row btn btn-group btn-primary expand"
+        style="margin-left: 15%"
+        class="row btn btn-sm btn-group btn-default expand"
         id="Expand"
+        aria-label="Left Align"
       >
-        Expand
+        <span
+          class="glyphicon glyphicon glyphicon-resize-full"
+          aria-hidden="true"
+        ></span>
       </button>
     </div>
-
+    <textarea
+      rows="3"
+      class="form-control description"
+      id="description"
+      placeholder="Write Description of tasks, if any."
+      onblur="getDescription()"
+    ></textarea>
     <canvas class="sheet" id="sheet" width="400" height="450"></canvas>
-    <button type="button" class="btn btn-snap btn-primary snapshot" id="snap">
-      Snapshot
-    </button>
+
     <script language="javascript" src="popup.js"></script>
   </body>
 </html>

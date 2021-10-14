@@ -1,7 +1,9 @@
 "use strict";
 const canvas = document.querySelector(".sheet");
 const input = document.getElementById("collection");
+const description = document.getElementById("description");
 const context = canvas.getContext("2d");
+const canvasState = document.createElement("canvas");
 
 context.strokeStyle = "#9c1fde";
 context.lineJoin = "round";
@@ -54,6 +56,7 @@ function redraw() {
  * @return {void}
  */
 function drawNew() {
+  saveCanvasState();
   var i = clickX.length - 1;
   if (!clickDrag[i]) {
     if (clickX.length == 0) {
@@ -114,41 +117,56 @@ function removeRaceHandlers() {
 
 canvas.addEventListener("touchstart", touchWins);
 
+//clear functionality
+var clear = document.getElementById("Clear");
+clear.addEventListener("click", function () {
+  clearDrawing();
+});
+
 const clearDrawing = () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
+  saveCanvasState();
 };
-const saveDrawing = () => {
-  var image = canvas
-    .toDataURL("image/png")
-    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  window.location.href = image; // it will save locally
+//save functionality
+var save = document.getElementById("Save");
+save.addEventListener("click", function () {
+  saveDrawing();
+});
+
+var nameImageFile;
+const saveDrawing = () => {
+  if (getVal() === "") {
+    alert("Please provide name of this collection.");
+  } else {
+    alert("Saving...");
+    nameImageFile = "Image_" + Date.now() + Math.random() + ".jpg";
+    var link = document.createElement("a");
+    var imageFile = canvas
+      .toDataURL("image/jpeg")
+      .replace("image/jpeg", "image/octet-stream");
+    link.href = imageFile;
+    link.download = nameImageFile;
+    link.target = "_blank";
+    link.click();
+    popup();
+    clearDrawing();
+  }
 };
+
+//Expand window to see collections
+var expand = document.getElementById("Expand");
+expand.addEventListener("click", function () {
+  showCollections();
+});
 const showCollections = () => {
   chrome.tabs.create({ url: chrome.runtime.getURL("collectionsView.html") });
 };
-document.addEventListener("DOMContentLoaded", function () {
-  var clear = document.getElementById("Clear");
-  clear.addEventListener("click", function () {
-    clearDrawing();
-  });
-  var save = document.getElementById("Save");
-  save.addEventListener("click", function () {
-    saveDrawing();
-  });
 
-  var expand = document.getElementById("Expand");
-  expand.addEventListener("click", function () {
-    showCollections();
-  });
-});
-
-function getVal() {
-  return input.value;
-}
-
-// save Collections listener and message sender
+// save webpage snapshot call
 function popup() {
+  var descriptionBox =
+    getDescription() === "" ? "Description not available." : getDescription();
   chrome.tabs.query(
     {
       active: true,
@@ -160,12 +178,37 @@ function popup() {
         tabId: tabs[0].id,
         tabUrl: tabs[0].url,
         collectionName: getVal(),
+        description: descriptionBox,
+        canvasSavedName: nameImageFile,
       };
       chrome.tabs.sendMessage(tabs[0].id, message);
     }
   );
 }
+function getVal() {
+  return input.value;
+}
+function getDescription() {
+  return description.value;
+}
 
+// saving canvas state : Managing lifecycle
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("snap").addEventListener("click", popup);
+  getCanvasStateAndRestore();
 });
+
+function getCanvasStateAndRestore() {
+  var dataURL = localStorage.getItem("canvasKey");
+  var img = new Image();
+  img.src = dataURL;
+  img.onload = function () {
+    context.drawImage(img, 0, 0);
+  };
+}
+
+function saveCanvasState() {
+  var image = canvas
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream");
+  localStorage.setItem("canvasKey", image);
+}
