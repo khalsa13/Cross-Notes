@@ -32,7 +32,11 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "Firebase/firebase-app.js",
+      "Firebase/firebase-firestore.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"

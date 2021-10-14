@@ -10,7 +10,6 @@ const firebaseConfig = {
   measurementId: "G-9L4D06W3RX",
 };
 window.onload = function (event) {
-  //notifyMe();
   canvas.height = height;
   canvas.width = width;
   console.log(width);
@@ -24,6 +23,7 @@ window.onload = function (event) {
 
   db = firebase.firestore();
   //storage Image references
+  notifyMe();
 };
 
 var body = document.body,
@@ -210,7 +210,7 @@ function notifyMe() {
   // Let's check if the user is okay to get some notification
   else if (Notification.permission === "granted") {
     // If it's okay let's create a notification
-    var notification = new Notification("Hi there!");
+    showNotificationContent();
   }
 
   // Otherwise, we need to ask the user for permission
@@ -225,10 +225,40 @@ function notifyMe() {
 
       // If the user is okay, let's create a notification
       if (permission === "granted") {
-        var notification = new Notification("Hi there!");
+        showNotificationContent();
       }
     });
   } else {
     alert(`Permission is ${Notification.permission}`);
   }
+}
+
+function showNotificationContent() {
+  var urlString = location.href;
+  if (urlString.length < 29)
+    urlString = urlString.substring(9, urlString.length - 1);
+  else urlString = urlString.substring(9, 20);
+
+  console.log(urlString);
+  db.collection("NotesCollection")
+    .get()
+    .then((querySnapshot) => {
+      documents = querySnapshot.docs.map((doc) => {
+        if (doc.id == urlString) {
+          var notification = new Notification(
+            "You already have saved notes for this page." +
+              "Click here to view."
+          );
+          notification.onclick = function () {
+            chrome.runtime.sendMessage(
+              {
+                type: "ACTIVITY_HISTORY_READY",
+                url: urlString,
+              },
+              function (response) {}
+            );
+          };
+        }
+      });
+    });
 }
